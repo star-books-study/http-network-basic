@@ -47,3 +47,8 @@
   - deflate(zlib)
   - identity(인코딩 없음)
 ### 3.3.3 분해해서 보내는 청크 전송 코딩
+- HTTP 통신에서는 리퀘스트했었던 리소스 전부에서 엔티티 바디의 전송이 완료되지 않으면 브라우저에 표시되지 않는다.
+- 사이즈가 큰 데이터를 전송하는 경우 데이터를 분할해서 조금씩 표시할 수 있다.
+- 청크 전송 코딩(Chunked transfer Coding) : 엔티티 바디를 분할하는 기능
+
+![](https://bunnyacademy.b-cdn.net/vgGCR-What-Is-HTTP-Chunked-Encoding.png)
