@@ -44,5 +44,22 @@ HTTP/1.1 200 OK
   - `MIME` (Multipurpose Internet Mail Extensions) 으로 불리는 메일로, 텍스트나 영상, 이미지 같은 여러 다른 데이터를 다루기 위한 기능을 사용한다
   - MIME 의 확장 사양에 있는 `멀티파트` 라고 하는 여러 다른 종류의 데이터를 수용하는 방법을 사용하고 있다
 - HTTP 도 멀티파트에 대응하고 있어서 **하나의 메시지 바디 내부에 엔티티 여러개 포함시켜 보낼 수 있다**
-- 
+- `multipart/form-data` : web 폼으로부터 파일 업로드에 사용된다
+```http
+Content-Type: multipart/form-data; boundary=AaB03x
+
+--AaB03x
+Content-Disposition: form-data; name="field1"
+
+JoeBlow
+--AaB03x
+Content-Disposition: form-data; name="pics"; filename="file1.txt"
+Content-Type: text/plain
+
+(file1.txt데이터)
+--AaB03x--
+```
+- HTTP 메시지로 멀티파트를 사용할 때는 `Content-Type` 헤더 필드를 사용한다.
+- 멀티파트 **각각의 엔티티를 구분하기 위해** boundary 문자열을 사용한다.
+- 멀티파트는 **파트마다 헤더 필드가 포함**되고 파트를 내부에 포함할 수도 있다.
  
