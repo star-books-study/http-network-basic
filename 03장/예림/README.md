@@ -49,6 +49,44 @@
 ### 3.3.3 분해해서 보내는 청크 전송 코딩
 - HTTP 통신에서는 리퀘스트했었던 리소스 전부에서 엔티티 바디의 전송이 완료되지 않으면 브라우저에 표시되지 않는다.
 - 사이즈가 큰 데이터를 전송하는 경우 데이터를 분할해서 조금씩 표시할 수 있다.
-- 청크 전송 코딩(Chunked transfer Coding) : 엔티티 바디를 분할하는 기능
+- 엔티티 바디를 분할하는 기능을 `청크 전송 코딩(Chunked transfer Coding)`이라고 한다.
 
 ![](https://bunnyacademy.b-cdn.net/vgGCR-What-Is-HTTP-Chunked-Encoding.png)
+
+- 청크 전송 코딩 과정
+  - 엔티티 바디를 청크(덩어리)로 분해
+  - 다음 청크 사이즈를 16진수로 사용해서 단락을 표시하고 엔티티 바디 끝에는 "0(CR+LF)"를 기록해둔다.
+  - 청크 전송 코딩된 엔티티 바디는 수신한 클라이언트 측에서 원래의 엔티티 바디로 디코딩
+
+## 3.4 여러 데이터를 보내는 멀티 파트
+- 메일의 본문 + 복수의 첨부 파일을 붙여 함께 보내는 경우 이것은 `MIME`(Multipurpose Internet Mail Extensions : 다목적 인터넷 메일 확장 사양)으로 불림.
+  - 메일로 텍스트나 영상, 이미지와 같은 여러 다른 데이터를 다루기 위한 기능을 사용하고 있음.
+- MIME은 이미지 등의 바이너리 데이터를 아스키 문자열에 인코딩하는 방법과 데이터 종류를 나타내는 방법 등을 규정하고 있음.
+- MIME의 확장 사양에 있는 멀티 파트라고 하는 여러 다른 종류의 데이터를 수용하는 방법을 사용하고 있는 것임.
+- HTTP도 멀티파트에 대응하고 있어 하나의 메시지 바디 내부에 엔티티를 여러 개 포함시켜 보낼 수 있음.
+- 주로 이미지나 텍스트 파일 등 업로드 시 사용
+
+- **multipart/form-data** : Web 폼으로부터 파일 업로드에 사용
+  ```
+  Content-Type: multipart/formdata; boundary=AaB03x
+
+  --AaB03x
+  Content-Disposition: form-data; name="field1"
+
+  Joe Blow
+  --AaB03x
+  Content-Disposition: form-data; name="pics"; filename="file1.txt"
+  Content-Type: text/plain
+
+  ... (file1.txt 데이터)
+  --AaB03x--
+  ```
+- **multipart/byteranges** : 상태 코드 206(Partial Content) 리스폰스 메시지가 복수 범위의 내용을 포함하는 데 사용
+  ```
+  HTTP/1.1 206 Partial Content
+  Date: Fri, 13 Jul 2012 02:45:26 GMT
+  Last-Modified: Fri, 31 Jul 2007 02:02:20 GMT
+  Content-Type: multipart/byteranges; boundary=THIS_STRING_SEPERATES
+
+  --THIS_STRING_SEPERATES
+  (작성하다 말았음)
